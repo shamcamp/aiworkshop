@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SW Critical Thinking Simulation: Maria</title>
+    
+    <style>
+        /* General Layout and Structure */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+        }
+        header {
+            background-color: #007bff;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #simulation-container {
+            display: flex;
+            max-width: 1000px;
+            margin: 0 auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background-color: white;
+        }
+        
+        /* Client File Sidebar */
+        #client-file {
+            flex: 1;
+            padding: 20px;
+            background-color: #f8f8f8;
+            border-right: 1px solid #ddd;
+        }
+        #client-file h2 {
+            color: #007bff;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
+        #client-file ul {
+            padding-left: 20px;
+            font-size: 0.9em;
+        }
+
+        /* Main Scenario Area */
+        #scenario-area {
+            flex: 2;
+            padding: 20px;
+        }
+        #scenario-stage {
+            color: #28a745;
+        }
+        
+        /* Interaction and Feedback */
+        .interaction-button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+        .interaction-button:hover { 
+            background-color: #0056b3; 
+        }
+
+        .hidden { 
+            display: none; 
+        }
+
+        /* Feedback Styling */
+        .feedback-area {
+            margin-top: 25px;
+            padding: 15px;
+            border-left: 5px solid;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        .correct-feedback {
+            border-left-color: #28a745; /* Green */
+            background-color: #e9f7eb; /* Very light green */
+            color: #155724;
+        }
+        .incorrect-feedback {
+            border-left-color: #dc3545; /* Red */
+            background-color: #f8e8e9; /* Very light red */
+            color: #721c24;
+        }
+        #next-step-button {
+            margin-top: 15px;
+            background-color: #17a2b8; /* Teal/Info color */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Case Simulation: Maria (Adolescent Trauma)</h1>
+    </header>
+
+    <div id="simulation-container">
+        <aside id="client-file">
+            <h2>Client File: Maria (Age 16)</h2>
+            <p><strong>Initial Concern:</strong> Difficulty integrating into the group home.</p>
+            <details open><summary>Key History (Click to Review)</summary>
+                <ul id="history-list">
+                    <li>History of childhood neglect and unstable placements.</li>
+                    <li>Goal is reunification with younger sister.</li>
+                    <li>Staff notes frequently use terms like "manipulative" and "resistant."</li>
+                </ul>
+            </details>
+        </aside>
+
+        <main id="scenario-area">
+            <h2 id="scenario-stage">Engage Stage</h2>
+            <p id="scenario-prompt">Loading...</p>
+
+            <div id="interaction-options">
+                </div>
+
+            <div id="feedback-area" class="hidden">
+                <h3>Feedback</h3>
+                <p id="feedback-text"></p>
+                <button id="next-step-button" onclick="nextStep()">Continue to Next Stage</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- Global State ---
+        let currentStageIndex = 0;
+        const stageOrder = ['Engage', 'Assess', 'Intervene', 'Evaluate'];
+        let score = 0;
+        const totalPossibleScore = stageOrder.length; // 4 points for 4 stages
+
+        // --- Scenario Data (The Brains) ---
+        const caseData = {
+            name: "Maria (Age 16)",
+            history: ["History of childhood neglect and unstable placements.", "Goal is reunification with younger sister.", "Staff notes frequently use terms like 'manipulative' and 'resistant.'"],
+            
+            stages: {
+                Engage: { 
+                    prompt: "Maria, 16, is silent during your initial meeting. The house manager reports she is 'manipulative and frequently lies.' How do you proceed with engagement?",
+                    options: [
+                        { id: 'A', text: "Start by saying: 'I want to hear about what you want. Could you tell me one thing you wish your social worker or the staff understood about you?'", correct: true, rationale: "**Critical Thinking:** This response prioritizes **Maria's voice** over the **unverified staff label** (checking bias/source credibility) and uses a non-confrontational, open-ended question to build rapport (Gibbons & Gray)." },
+                        { id: 'B', text: "State: 'The staff says you've been lying. I need you to be honest with me so we can help.'", correct: false, rationale: "This choice fails to employ critical thinking by accepting the **staff's interpretation** as fact, immediately damaging rapport and reinforcing Maria's perceived need to lie (Gambrill's focus on evidence scrutiny)." }
+                    ]
+                },
+                Assess: { 
+                    prompt: "Maria states, 'They never let me talk to my sister.' Staff notes say: 'Maria was given a supervised call; she hung up after 2 minutes.' Which piece of information requires the most critical scrutiny and probing?",
+                    options: [
+                        { id: 'A', text: "Maria's statement that they 'never let' her.", correct: false, rationale: "Maria's perception is a key clinical fact, but the *staff note* contains an observation needing scrutiny. The perception itself is a data point on her emotional state." },
+                        { id: 'B', text: "The staff's note that she 'hung up after 2 minutes.'", correct: true, rationale: "**Critical Thinking:** The staff note presents an observable **behavioral fact** ('hung up') but lacks crucial **context** (the 'why'). Critical assessment requires probing the *meaning* of the two minutes to distinguish fact from the staff's interpretation of resistance (Gambrill)." }
+                    ]
+                },
+                Intervene: { 
+                    prompt: "Assessment reveals Maria's behavior (lying, shutting down) aligns with trauma responses. Her goal is reunification with her sister. Which intervention is best supported by **Trauma-Informed Care** principles?",
+                    options: [
+                        { id: 'A', text: "Arrange for family therapy with her and her sister, ensuring the focus is on rebuilding safety, control, and communication.", correct: true, rationale: "**Critical Thinking:** This is a **theory-driven, evidence-based** approach. It addresses the **underlying cause** (trauma) and meets the client's goal (reunification) by creating a controlled, safe environment (Gibbons & Gray)." },
+                        { id: 'B', text: "Implement a strict point system for honesty and reward truth-telling to immediately curb the lying behavior.", correct: false, rationale: "This is a basic behavioral strategy that ignores the **root cause** of the behavior (trauma) and is likely to be ineffective or damaging, failing to apply the assessment findings (Gambrill)." }
+                    ]
+                },
+                Evaluate: { 
+                    prompt: "Two months later, Maria's sister-related anxiety is down, and visits are stable. However, she is now frequently getting into verbal arguments with peers. How should you adjust your evaluation and case plan?",
+                    options: [
+                        { id: 'A', text: "Introduce a new goal focused on peer conflict resolution skills, and begin tracking the **frequency and severity** of arguments as the new outcome data.", correct: true, rationale: "**Critical Thinking:** Evaluation is an iterative cycle. This demonstrates using **newly emerged data** (peer conflict) to **adjust the plan** and focus on a new, measurable outcome, rather than dwelling on the resolved issue (Gibbons & Gray)." },
+                        { id: 'B', text: "Focus solely on stabilizing the sister visits, as that was the original, main reunification goal.", correct: false, rationale: "This ignores the current, most pressing clinical data and fails to use the evaluation stage to adjust practice according to the client's current, holistic needs (Gambrill)." }
+                    ]
+                }
+            }
+        };
+
+        // --- Core Simulation Functions ---
+
+        function loadScenario() {
+            const currentStageName = stageOrder[currentStageIndex];
+            const stageData = caseData.stages[currentStageName];
+            
+            // Update main display elements
+            document.getElementById('scenario-stage').textContent = `${currentStageName} Stage`;
+            document.getElementById('scenario-prompt').textContent = stageData.prompt;
+            
+            // Clear and render options
+            const optionsContainer = document.getElementById('interaction-options');
+            optionsContainer.innerHTML = '';
+            stageData.options.forEach(option => {
+                const button = document.createElement('button');
+                button.className = 'interaction-button';
+                button.textContent = option.text;
+                button.onclick = () => handleSelection(option.id); 
+                optionsContainer.appendChild(button);
+            });
+
+            // Hide feedback area
+            document.getElementById('feedback-area').classList.add('hidden');
+        }
+
+        function handleSelection(selectedId) {
+            const currentStageName = stageOrder[currentStageIndex];
+            const stageData = caseData.stages[currentStageName];
+            const selectedOption = stageData.options.find(opt => opt.id === selectedId);
+
+            // Lock all buttons by clearing the container
+            document.getElementById('interaction-options').innerHTML = '';
+
+            const feedbackArea = document.getElementById('feedback-area');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            if (selectedOption.correct) {
+                score++;
+                feedbackText.innerHTML = `✅ **Correct!** This choice demonstrates strong critical thinking. <br><br> **Critical Thinking Rationale:** ${selectedOption.rationale}`;
+                feedbackArea.className = 'feedback-area correct-feedback';
+            } else {
+                const correctOption = stageData.options.find(opt => opt.correct);
+                feedbackText.innerHTML = `❌ **Less Effective Choice.** <br><br> **Critical Thinking Rationale:** ${selectedOption.rationale} The stronger, evidence-based choice was: *${correctOption.text}*.`;
+                feedbackArea.className = 'feedback-area incorrect-feedback';
+            }
+            
+            feedbackArea.classList.remove('hidden');
+        }
+
+        function nextStep() {
+            currentStageIndex++;
+            
+            if (currentStageIndex < stageOrder.length) {
+                loadScenario();
+            } else {
+                // Simulation finished
+                document.getElementById('scenario-area').innerHTML = `
+                    <h2>Simulation Complete! 🎉</h2>
+                    <p>You have finished the case of Maria.</p>
+                    <p>Your Final Score: **${score} / ${totalPossibleScore}**</p>
+                    <p>Review the rationales to reinforce your understanding of evidence scrutiny and trauma-informed practice.</p>
+                `;
+                document.getElementById('client-file').style.display = 'none';
+            }
+        }
+
+        // Start the simulation when the page loads
+        document.addEventListener('DOMContentLoaded', loadScenario);
+    </script>
+</body>
+</html>
