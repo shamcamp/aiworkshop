@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Social Work Critical Thinking Simulation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Case Simulation: Critical Thinking in Practice</h1>
+    </header>
+
+    <div id="simulation-container">
+        <aside id="client-file">
+            <h2>Client File: <span id="client-name"></span></h2>
+            <p><strong>Initial Concern:</strong> <span id="initial-concern"></span></p>
+            <details><summary>Key History (Click to Review)</summary>
+                <ul id="history-list"></ul>
+            </details>
+        </aside>
+
+        <main id="scenario-area">
+            <h2 id="scenario-stage"></h2>
+            <p id="scenario-prompt"></p>
+
+            <div id="interaction-options">
+                </div>
+
+            <div id="feedback-area" class="hidden">
+                <h3>Feedback</h3>
+                <p id="feedback-text"></p>
+                <button id="next-step-button" onclick="nextStep()">Continue</button>
+            </div>
+        </main>
+    </div>
+
+    <footer><p>Gibbons & Gray (2004) and Gambrill (1997) principles applied.</p></footer>
+    <script src="script.js"></script>
+</body>
+</html>
